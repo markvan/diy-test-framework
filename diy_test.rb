@@ -6,6 +6,11 @@ def assert test, msg = 'Failed test'
 end
 
 def assert_equal(a, b)
-  assert a == b
+  assert( a == b, "expected #{a} got #{b}")
+end
+
+def assert_with_delta(a, b)
+  delta = 0.001
+  assert( (a - b).abs < delta, "expected #{a} got #{b}" )
 end
 
