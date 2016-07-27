@@ -14,3 +14,7 @@ def assert_with_delta(a, b)
   assert( (a - b).abs < delta, "expected #{a} got #{b}" )
 end
 
+def test(name='Untitled')
+  yield
+end
+

@@ -1,8 +1,8 @@
 require './diy_test'
 
 
-def main
-  assert_with_delta 2.5, 5/2+0.54
+test 'first assert' do
+  assert_equal [1,2], [1,2.00001]
 end
 
 main
