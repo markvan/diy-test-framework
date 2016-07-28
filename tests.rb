@@ -1,9 +1,21 @@
 require './diy_test'
 
+class RunTest
+  def a
+    @a ||= 1
+  end
 
-test 'first assert' do
-  assert_equal [1,2], [1,2.00001]
+  def passing_test
+    assert_equal 1, a
+  end
+
+  def failing_test
+    assert_equal 1, 2
+  end
 end
 
-main
+RunTest.new.run
+
+
+
 
