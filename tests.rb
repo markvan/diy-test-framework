@@ -14,7 +14,7 @@ class RunTest
   end
 end
 
-RunTest.new.run
+RunTest.run
 
 
 

@@ -1,8 +1,8 @@
 class RunTest
 
-  def run
-    meths = self.class.public_instance_methods.grep( /_test$/ )
-    meths.each{|meth| send(meth); puts "#{meth} passed"}
+  def self.run
+    meths = public_instance_methods.grep( /_test$/ )
+    meths.each{|meth| self.new.send(meth); puts "#{meth} passed"}
   end
 
   def assert test, msg = 'no reason offered'
@@ -11,7 +11,7 @@ class RunTest
       source        = bt.first
       test_name     = source.scan( /:in .(.+)'/)[0][0]
       file_and_line = source.scan( /\/([^\/]*:\d*):/ )[0][0]
-      puts "#{test_name} failed (#{file_and_line}): #{msg}"
+      puts "#{test_name} failed (#{file_and_line}) #{msg}"
       raise RuntimeError, msg, bt
     end
   end
