@@ -1,4 +1,4 @@
-class RunTest
+class Test
 
   def self.run
     meths = public_instance_methods.grep( /_test$/ )
@@ -9,8 +9,8 @@ class RunTest
     unless test then
       bt = caller.drop_while { |s| s =~ /#{__FILE__}/ }
       source        = bt.first
-      test_name     = source.scan( /:in .(.+)'/)[0][0]
-      file_and_line = source.scan( /\/([^\/]*:\d*):/ )[0][0]
+      test_name     = source[ /:in .(.+)'/, 1]
+      file_and_line = source[ /\/([^\/]*:\d*):/, 1]
       puts "#{test_name} failed (#{file_and_line}) #{msg}"
       raise RuntimeError, msg, bt
     end

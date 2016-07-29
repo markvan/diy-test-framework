@@ -1,6 +1,6 @@
 require './diy_test'
 
-class RunTest
+class SampleTests < Test
   def a
     @a ||= 1
   end
@@ -14,7 +14,7 @@ class RunTest
   end
 end
 
-RunTest.run
+SampleTests.run
 
 
 
