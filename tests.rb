@@ -15,7 +15,7 @@ class SampleTests < Test
   end
 
   def failing_test
-    b = 2222
+    self.b = 2222
     assert_equal 2, b
   end
 end

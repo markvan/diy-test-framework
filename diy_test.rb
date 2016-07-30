@@ -1,45 +1,44 @@
 class Test
 
-  @@test_context = nil
-
-  class << self
-    attr_accessor :test_context
-  end
-
   def self.run
     tests = public_instance_methods.grep( /_test/ )
     tests.each do | t |
-      self.test_context = self.new
-      self.test_context.before
-      self.test_context.send( t )
-      puts "#{t} passed"
+      test_context = self.new
+      test_context.before
+      test_context.send( t )
+      test_context.print_success(t)
     end
   end
 
   def let(symb)
-    attr     = ('@'+symb.to_s).to_sym
-    attr_set = (symb.to_s+'=').to_sym
-
-    self.class.test_context.instance_variable_set attr, yield
-
-    self.define_singleton_method(symb) do
-      eval attr.to_s
+    symb_inst_var = ('@'+symb.to_s).to_sym
+    instance_variable_set symb_inst_var, yield
+    define_singleton_method(symb) do
+      eval symb_inst_var.to_s
     end
-
-    self.define_singleton_method(attr_set) do |val|
-      attr = val
+    symb_inst_var_setter = (symb.to_s+'=').to_sym
+    define_singleton_method(symb_inst_var_setter) do |val|
+      instance_variable_set symb_inst_var, val
     end
   end
 
   def assert test, msg = 'no reason offered'
     unless test then
       bt = caller.drop_while { |s| s =~ /#{__FILE__}/}
-      source        = bt.first
-      test_name     = source[ /:in .(.+)'/, 1]
-      file_and_line = source[ /\/([^\/]*:\d*):/, 1]
-      puts "#{test_name} failed (#{file_and_line}) #{msg}"
+      print_failure(bt, msg)
       raise RuntimeError, msg, bt
     end
+  end
+
+  def print_success(t)
+    puts "#{t} passed"
+  end
+
+  def print_failure(bt, msg)
+    source        = bt.first
+    test_name     = source[ /:in .(.+)'/, 1]
+    file_and_line = source[ /\/([^\/]*:\d*):/, 1]
+    puts "#{test_name} failed (#{file_and_line}) #{msg}"
   end
 
   def assert_equal(a, b)
@@ -49,10 +48,6 @@ class Test
   def assert_with_delta(a, b)
     delta = 0.001
     assert((a - b).abs < delta, "expected #{a} got #{b}")
-  end
-
-  def test(name='Untitled')
-    yield
   end
 
 end
