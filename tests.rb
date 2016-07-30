@@ -1,16 +1,18 @@
 require './diy_test'
 
 class SampleTests < Test
-  def a
-    @a ||= 1
+
+  def before
+    set_attr(:b){2}
   end
 
   def passing_test
-    assert_equal 1, a
+    assert_equal 1, 1
   end
 
   def failing_test
-    assert_equal 1, 2
+    self.b = 2222
+    assert_equal 1, b
   end
 end
 
