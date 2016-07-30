@@ -2,27 +2,31 @@ class Test
 
   @@test_context = nil
 
+  class << self
+    attr_accessor :test_context
+  end
+
   def self.run
-    tests = public_instance_methods.grep( /_test$/ )
+    tests = public_instance_methods.grep( /_test/ )
     tests.each do | t |
-      @@test_context = self.new
-      @@test_context.before
-      @@test_context.send( t )
-      puts "#{meth} passed"
+      self.test_context = self.new
+      self.test_context.before
+      self.test_context.send( t )
+      puts "#{t} passed"
     end
   end
 
-  def set_attr(symb)
+  def let(symb)
     attr     = ('@'+symb.to_s).to_sym
     attr_set = (symb.to_s+'=').to_sym
 
-    @@test_context.instance_variable_set attr, yield
+    self.class.test_context.instance_variable_set attr, yield
 
-    @@test_context.define_singleton_method(symb) do
+    self.define_singleton_method(symb) do
       eval attr.to_s
     end
 
-    @@test_context.define_singleton_method(attr_set) do |val|
+    self.define_singleton_method(attr_set) do |val|
       attr = val
     end
   end
